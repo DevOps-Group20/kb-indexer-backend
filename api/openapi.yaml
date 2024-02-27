@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: KB Indexer API
+  description: This API is used for admins of the KB-Indexer to index sources
+  contact:
+    email: danielv2000@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: http://localhost:8090
+  description: Main
+security:
+- bearerAuth:
+  - test
+paths:
+  /indexers:
+    get:
+      description: Returns list of all available indexers and their respective resource
+        types
+      operationId: getIndexers
+      responses:
+        "200":
+          description: Array of all indexers and their sources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Indexer'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+      x-swagger-router-controller: Default
+  /index:
+    post:
+      description: Runs indexing pipline
+      operationId: runIndexingPipeline
+      requestBody:
+        description: Request indexer to execute with optional respecitive source
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/index_body'
+      responses:
+        "200":
+          description: Indexing started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Invalid input
+        "401":
+          description: Access token is missing or invalid
+        "404":
+          description: Resource not found
+        "418":
+          description: |
+            Can't brew coffee, server is a teapot.<br>
+            https://www.rfc-editor.org/rfc/rfc2324#section-2.3.2
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    IndexingState:
+      type: string
+      enum:
+      - RUNNING
+      - DONE
+      - FAILED
+    Indexer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Notebooks
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+      example:
+        sources:
+        - name: Kaggle
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - name: Kaggle
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: Notebooks
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+    Source:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Kaggle
+      example:
+        name: Kaggle
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+    index_body:
+      required:
+      - indexer_id
+      type: object
+      properties:
+        indexer_id:
+          type: string
+          format: uuid
+        source_id:
+          type: string
+          format: uuid
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Indexing started successfully.
+      example:
+        message: Indexing started successfully.
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
