@@ -4,8 +4,7 @@
   "description": "This API is used for admins of the KB-Indexer to index sources",
   "main": "index.js",
   "scripts": {
-	"prestart": "npm install",
-	"start": "node index.js"
+    "start": "node index.js"
   },
   "keywords": [
     "swagger"
