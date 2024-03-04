@@ -1,19 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: service
+  name: service
+spec:
+  type: NodePort
+  ports:
+  - port: 8090
+    protocol: TCP
+    name: http
+  selector:
+    io.kompose.service: service
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kb-indexer-backend
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: service
+  name: service
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: kb-indexer-backend
+      io.kompose.service: service
+  replicas: 1
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: kb-indexer-backend
+        io.kompose.service: service
     spec:
       containers:
-      - name: kb-indexer-backend
+      - env:
         image: philippsommer27/kb-indexer-backend:latest
+        name: kb-indexer-backend
+        imagePullPolicy: Always
         ports:
         - containerPort: 8090
+        resources: {}
+      restartPolicy: Always
+status: {}
