@@ -12,3 +12,8 @@ module.exports.runIndexingPipeline = function runIndexingPipeline (req, res, nex
   Default.runIndexingPipeline(body)
     .then(resp => utils.writeJson(res, resp))
 };
+
+module.exports.subscribeToEvents = function subscribeToEvents(req, res, next) {
+  Default.subscribeToEvents(req, res);
+}
+

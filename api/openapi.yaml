@@ -61,6 +61,20 @@ paths:
             Can't brew coffee, server is a teapot.<br>
             https://www.rfc-editor.org/rfc/rfc2324#section-2.3.2
       x-swagger-router-controller: Default
+  /events:
+      get:
+        description: Subscribe to a global stream of server-sent events for indexing updates.
+        operationId: subscribeToEvents
+        responses:
+          "200":
+            description: SSE Stream opened
+            content:
+              text/event-stream:
+                schema:
+                  type: string
+          "401":
+            description: Unauthorized access
+        x-swagger-router-controller: Default
 components:
   schemas:
     IndexingState:

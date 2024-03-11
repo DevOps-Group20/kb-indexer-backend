@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #events {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            width: 300px;
+            height: 200px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h2>Server-Sent Events Test</h2>
+    <p>Connecting to <code>/events</code> endpoint and displaying messages:</p>
+    <div id="events"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const eventContainer = document.getElementById('events');
+            const eventSource = new EventSource('http://localhost:8090/events');
+
+            eventSource.onmessage = function(e) {
+                console.log('Message from server:', e.data);
+                const msg = document.createElement('p');
+                msg.textContent = e.data;
+                eventContainer.appendChild(msg);
+            };
+
+            eventSource.onerror = function(e) {
+                console.error('EventSource failed:', e);
+                const msg = document.createElement('p');
+                msg.textContent = 'Error! EventSource connection failed.';
+                eventContainer.appendChild(msg);
+                eventSource.close();
+            };
+
+            eventSource.onopen = function() {
+                console.log('Connection to server opened.');
+                const msg = document.createElement('p');
+                msg.textContent = 'Connection to server opened.';
+                eventContainer.appendChild(msg);
+            };
+        });
+    </script>
+</body>
+</html>
