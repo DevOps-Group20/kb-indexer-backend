@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kb-indexer-backend
+  name: kb-indexer-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kb-indexer-backend
+  template:
+    metadata:
+      labels:
+        app: kb-indexer-backend
+    spec:
+      serviceAccount: kb-indexer-backend-sa
+      containers:
+      - name: kb-indexer-backend
+        image: souitch/kb-indexer-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8090
+        env:
+        - name: NODE_ENV
+          value: "production"
+        # Include other environment variables your application needs
+        - name: LOL
+          value: "lol8"
+
