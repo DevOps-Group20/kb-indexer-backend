@@ -51,3 +51,27 @@ exports.runIndexingPipeline = async function (body) {
   return ({ "message": "message" });
 }
 
+const { jobStatusEmitter } = require('./JobManager');
+
+exports.subscribeToEvents = function (req, res) {
+  // Set headers for SSE
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  });
+
+  // Keep the connection open by sending a comment every X seconds
+  const intervalId = setInterval(() => {
+    res.write(': keep-alive\n\n');
+  }, 20000); // 20 seconds
+
+  jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
+    res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
+  });
+
+  req.on('close', () => {
+      clearInterval(intervalId);
+      jobStatusEmitter.removeAllListeners('jobStatusChanged');
+  });
+};

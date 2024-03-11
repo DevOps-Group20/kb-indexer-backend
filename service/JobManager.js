@@ -12,6 +12,7 @@ exports.setupK8S = async function () {
     batchV1Api = kc.makeApiClient(k8s.BatchV1Api);
     //const jobYaml = fs.readFileSync('./service/job.yaml', 'utf8');
     //job = k8s.loadYaml(jobYaml);
+    watchAllJobsStatus();
     console.log("K8S API client initialized");
 };
 
@@ -72,3 +73,51 @@ exports.createJob = async function (indexer_id, source_id) {
         console.error('Error in job creation:', err);
     }
 };
+
+const { EventEmitter } = require('events');
+const jobStatusEmitter = new EventEmitter();
+
+exports.watchJobStatus = function(jobName) {
+    const watch = new k8s.Watch(kc);
+    const path = `/apis/batch/v1/namespaces/default/jobs/${jobName}/status`;
+
+    watch.watch(path, 
+        // optional query parameters can go here.
+        {},
+        // callback for when a change is detected
+        (type, apiObj, watchObj) => {
+            if (type === 'ADDED' || type === 'MODIFIED') {
+                console.log('Job status changed');
+                jobStatusEmitter.emit('jobStatusChanged', apiObj);
+            }
+        },
+        // callback for any errors
+        (err) => {
+            console.error(err);
+        }
+    );
+    
+    // Optional: handle watch termination, etc.
+};
+const watchAllJobsStatus = function() {
+    const watch = new k8s.Watch(kc);
+    const path = '/apis/batch/v1/namespaces/default/jobs';
+
+    watch.watch(path, 
+        {},
+        // callback for when a change is detected
+        (type, apiObj, watchObj) => {
+            if (type === 'ADDED' || type === 'MODIFIED') {
+                jobStatusEmitter.emit('jobStatusChanged', apiObj);
+            }
+        },
+        // callback for any errors
+        (err) => {
+            console.error(err);
+        }
+    );
+
+    // Optional: handle watch termination, etc.
+};
+// Export the emitter so other modules can listen to it
+exports.jobStatusEmitter = jobStatusEmitter;
