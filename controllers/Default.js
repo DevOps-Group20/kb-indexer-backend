@@ -6,7 +6,7 @@ const { verifyToken } = require('../utils/authenticate.js');
 
 module.exports.getIndexers = async function getIndexers(req, res, next) {
   if (await verifyToken(req)) {
-    utils.writeJson(res, { message: 'Success'}, 200);
+    utils.writeJson(res, Default.getIndexers(), 200);
   } else {
     utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401)
   }
