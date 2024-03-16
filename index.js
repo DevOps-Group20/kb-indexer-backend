@@ -5,6 +5,7 @@ var http = require('http');
 var cors = require('cors'); // Include the CORS middleware
 
 var oas3Tools = require('oas3-tools');
+const { initFirebase } = require('./utils/authenticate');
 var serverPort = 8090;
 
 // swaggerRouter configuration
@@ -19,7 +20,7 @@ var app = expressAppConfig.getApp();
 app.options('*', cors()) // include before other routes
 
 
-  
+  initFirebase();
 
 // const { setupK8S } = require('./service/JobManager');
 
