@@ -6,7 +6,7 @@ const { getPods, createJob } = require('./JobManager');
  *
  * returns List
  **/
-exports.getIndexers = async function () {
+exports.getIndexers = function () {
   return [{
     "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
     "name": "Notebooks",
