@@ -1,34 +1,14 @@
 'use strict';
 
 const { getPods, createJob } = require('./JobManager');
+const indexersJson = require('../indexconfig/indexers.json');
 /**
  * Returns list of all available indexers and their respective resource types
  *
  * returns List
  **/
 exports.getIndexers = function () {
-  return [{
-    "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-    "name": "Notebooks",
-    "sources": [{
-      "name": "Kaggle",
-      "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-    }, {
-      "name": "Kaggle",
-      "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-    }],
-    "name": "Notebooks",
-    "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-  }, {
-    "sources": [{
-      "name": "Kaggle",
-      "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-    }, {
-      "name": "Kaggle",
-      "id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-    }],
-
-  }];
+  return indexersJson;
 }
 
 
