@@ -1,0 +1,58 @@
+{
+  "notebook": [
+    {
+      "name": "all",
+      "command": "kb_indexer notebook pipeline"
+    },
+    {
+      "name": "Kaggle",
+      "command": "kb_indexer notebook -r Kaggle pipeline"
+    },
+    {
+      "name": "GitHub",
+      "command": "kb_indexer notebook -r GitHub pipeline"
+    }
+  ],
+  "web": [
+    {
+      "name": "all",
+      "command": "kb_indexer web pipeline"
+    }
+  ],
+  "dataset": [
+    {
+      "name": "all",
+      "command": "kb_indexer dataset pipeline"
+    },
+    {
+      "name": "DiSSCo",
+      "command": "kb_indexer dataset -r 'DiSSCo' pipeline"
+    },
+    {
+      "name": "ICOS",
+      "command": "kb_indexer dataset -r 'ICOS' pipeline"
+    },
+    {
+      "name": "LifeWatch",
+      "command": "kb_indexer dataset -r 'LifeWatch' pipeline"
+    },
+    {
+      "name": "SeaDataNet CDI",
+      "command": "kb_indexer dataset -r 'SeaDataNet CDI' pipeline"
+    },
+    {
+      "name": "SeaDataNet EDMED",
+      "command": "kb_indexer dataset -r 'SeaDataNet EDMED' pipeline"
+    },
+    {
+      "name": "SIOS",
+      "command": "kb_indexer dataset -r 'SIOS' pipeline"
+    }
+  ],
+  "api": [
+    {
+      "name": "all",
+      "command": "kb_indexer api pipeline"
+    }
+  ]
+}

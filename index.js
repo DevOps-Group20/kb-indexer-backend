@@ -19,8 +19,13 @@ var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/open
 var app = expressAppConfig.getApp();
 app.options('*', cors()) // include before other routes
 
+const { resolveExistingIndexerOptions } = require('./indexconfig/parse-indexers');
 
-  initFirebase();
+resolveExistingIndexerOptions();
+
+const { setupK8S } = require('./service/JobManager');
+
+initFirebase();
 
 // const { setupK8S } = require('./service/JobManager');
 
