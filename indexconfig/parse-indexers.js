@@ -3,8 +3,8 @@ const path = require('path');
 
 const basePath = path.join(__dirname, 'indexers_base.json');
 const targetPath = path.join(__dirname, 'indexers.json');
-const entryPointPath = path.join(__dirname, 'indexers\\notebook\\entrypoint.py');
-const datasetsDirPath = path.join(__dirname, 'indexers\\dataset\\repositories'); 
+const entryPointPath = path.join(__dirname, 'indexers/notebook/entrypoint.py');
+const datasetsDirPath = path.join(__dirname, 'indexers/dataset/repositories'); 
 
 function parseNotebookNames() {
     const data = fs.readFileSync(entryPointPath, 'utf8');
