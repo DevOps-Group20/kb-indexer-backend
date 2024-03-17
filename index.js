@@ -16,6 +16,10 @@ var options = {
 var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 var app = expressAppConfig.getApp();
 
+const { resolveExistingIndexerOptions } = require('./indexconfig/parse-indexers');
+
+resolveExistingIndexerOptions();
+
 const { setupK8S } = require('./service/JobManager');
 
 setupK8S();
