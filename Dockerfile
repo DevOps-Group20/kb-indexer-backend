@@ -1,18 +1,11 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG NODE_VERSION=21.6.2
 
 FROM node:${NODE_VERSION}-alpine
 
 # Use production node environment by default.
 ENV NODE_ENV production
-
 
 WORKDIR /usr/src/app
 
@@ -25,11 +18,15 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
+# Adjust permissions to ensure the 'node' user can access necessary files
+RUN mkdir -p /usr/src/app && \
+    chown -R node:node /usr/src/app
+
 # Run the application as a non-root user.
 USER node
 
 # Copy the rest of the source files into the image.
-COPY . .
+COPY --chown=node:node . .
 
 # Expose the port that the application listens on.
 EXPOSE 3000

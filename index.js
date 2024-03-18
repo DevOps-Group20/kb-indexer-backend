@@ -16,7 +16,7 @@ const serverPort = 8090;
 initFirebase();
 
 resolveExistingIndexerOptions();
-// setupK8S();
+setupK8S();
 
 
 

@@ -3,12 +3,12 @@
   "c3334f24-0379-436f-a917-30270077444f": "kb_indexer web pipeline",
   "91820dc4-b653-474c-958f-b7539d7c3c53": "kb_indexer dataset pipeline",
   "2263b73a-3222-4fc0-bf97-ba4b62baf0bf": "kb_indexer api pipeline",
-  "8acfce26-a703-4428-b945-2f2173669f70": "kb_indexer notebook -r Kaggle pipeline",
-  "6da9ec89-6c8b-4637-8c21-e1b58a4dd6f4": "kb_indexer notebook -r GitHub pipeline",
-  "27606cd6-82d0-45e0-8318-f22684681ae8": "kb_indexer dataset -r 'DiSSCo' pipeline",
-  "df98e89b-6e33-4722-ba4c-52f1b6bb8462": "kb_indexer dataset -r 'ICOS' pipeline",
-  "5c9798ff-1a78-424b-a55e-34117960159a": "kb_indexer dataset -r 'LifeWatch' pipeline",
-  "776d5052-40ab-4550-a276-9805763e59ad": "kb_indexer dataset -r 'SeaDataNet CDI' pipeline",
-  "65d99ffa-6b9a-4ec9-a304-01b2d6024ebd": "kb_indexer dataset -r 'SeaDataNet EDMED' pipeline",
-  "a013a6c7-5f89-4bbc-bb7e-0ed885ec39ab": "kb_indexer dataset -r 'SIOS' pipeline"
+  "73773fcc-5589-425f-9f96-bb1e3060208f": "kb_indexer notebook -r Kaggle pipeline",
+  "7de111fe-e56e-4d39-8442-efceb33ef3ca": "kb_indexer notebook -r GitHub pipeline",
+  "a2e3f24d-4de8-45dd-b6b2-45c417ff1fc2": "kb_indexer dataset -r 'DiSSCo' pipeline",
+  "028d136d-00dd-40e7-8a20-cdd36aafce43": "kb_indexer dataset -r 'ICOS' pipeline",
+  "badad2ee-cd1d-4373-a175-2b91a288b79d": "kb_indexer dataset -r 'LifeWatch' pipeline",
+  "3a0a7f0b-fafe-4f19-aa91-d9aed2f58a8a": "kb_indexer dataset -r 'SeaDataNet CDI' pipeline",
+  "4c495eb3-e831-47c3-9bad-e911e5606998": "kb_indexer dataset -r 'SeaDataNet EDMED' pipeline",
+  "b552ff19-ad9d-4bac-a1ff-05ae0c007295": "kb_indexer dataset -r 'SIOS' pipeline"
 }

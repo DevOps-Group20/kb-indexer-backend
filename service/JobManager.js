@@ -3,6 +3,12 @@ const k8s = require('@kubernetes/client-node');
 const fs = require('fs');
 const uuid = require('uuid');
 
+const path = require('path');
+
+// Construct the absolute path to the JSON file
+const jsonPath = path.join(__dirname, '..', 'indexconfig', 'indexers_id.json');
+const indexers = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+
 let kc, k8sApi, batchV1Api;
 
 exports.setupK8S = async function () {
@@ -34,12 +40,11 @@ exports.createJob = async function (pipeline_id) {
     
 
 
-    let commandArgs = [];
+    let additionalCommand = "";
     try {
-        const indexers = JSON.parse(fs.readFileSync('../indexconfig/indexers_id.json', 'utf8'));
         const indexer = indexers[pipeline_id];
         if (indexer) {
-            commandArgs = indexer.command.split(' ');
+            additionalCommand = indexer;
         } else {
             console.log(`No indexer found for pipeline_id: ${pipeline_id}`);
         }
@@ -47,7 +52,12 @@ exports.createJob = async function (pipeline_id) {
         console.error('Error reading indexers.json:', err);
     }
 
-    // Generate a unique job name
+    let mkdirCommand = 'mkdir -p /app/data';
+    let fullCommandString = `${mkdirCommand} && ${additionalCommand}`;
+
+    let finalCommand = ['sh', '-c', fullCommandString];
+    console.log('Executing: ', finalCommand.join(" "));
+
     let jobName = `kb-indexer-${uuid.v4()}`;
 
     // Set the required environment variables for the kb-indexer container
@@ -78,7 +88,7 @@ exports.createJob = async function (pipeline_id) {
                     containers: [{
                         name: 'kb-indexer-container',
                         image: 'qcdis/kb-indexer', 
-                        command: commandArgs,
+                        command: finalCommand,
                         env: envVars
                     }],
                     restartPolicy: 'Never'
@@ -92,6 +102,7 @@ exports.createJob = async function (pipeline_id) {
         // Check for existing jobs with the same labels
         const labelSelector = `pipeline_id=${pipeline_id}`;
         const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
+
 
         if (existingJobs.body.items.length > 0) {
             console.log('A job with the same pipeline_id already exists');
