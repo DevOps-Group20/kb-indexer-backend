@@ -36,7 +36,3 @@ function resolveReindexingTasks() {
   }
   
   module.exports = { resolveReindexingTasks };
-
-  if (require.main === module) {
-    resolveReindexingTasks();
-  }
