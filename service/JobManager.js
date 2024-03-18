@@ -27,56 +27,9 @@ exports.getPods = async function () {
     }
 };
 
-/*
-exports.createJob = async function (indexer_id, source_id) {
-    let commandArgs = ["print bpi(2000)"];
-    let jobName = `pi-${uuid.v4()}`;
-    
-    // Construct the job object with labels
-    let job = {
-        apiVersion: 'batch/v1',
-        kind: 'Job',
-        metadata: {
-            name: jobName,
-            labels: {
-                indexer_id: indexer_id,
-                source_id: source_id
-            }
-        },
-        spec: {
-            ttlSecondsAfterFinished: 3600,
-            template: {
-                spec: {
-                    containers: [{
-                        name: 'pi',
-                        image: 'perl:5.34.0',
-                        command: ['perl', '-Mbignum=bpi', '-wle', ...commandArgs]
-                    }],
-                    restartPolicy: 'Never'
-                }
-            },
-            backoffLimit: 4
-        }
-    };
 
-    try {
-        const labelSelector = `indexer_id=${indexer_id},source_id=${source_id}`;
-        const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
 
-        if (existingJobs.body.items.length > 0) {
-            console.log('A job with the same indexer_id and source_id already exists');
-            return; 
-        }
-
-        let response = await batchV1Api.createNamespacedJob('default', job);
-        console.log('Job created:', response.body);
-    } catch (err) {
-        console.error('Error in job creation:', err);
-    }
-};
-*/
-
-exports.createJob = async function (indexer_id, source_id) {
+exports.createJob = async function (pipeline_id) {
     // Define the command arguments for the specific kb-indexer task
     let commandArgs = ['notebook', '-r', 'Kaggle', 'index']; // Example: running the full API indexing pipeline
 
@@ -101,8 +54,7 @@ exports.createJob = async function (indexer_id, source_id) {
         metadata: {
             name: jobName,
             labels: {
-                indexer_id: indexer_id,
-                source_id: source_id
+                pipeline_id: pipeline_id
             }
         },
         spec: {
@@ -124,11 +76,11 @@ exports.createJob = async function (indexer_id, source_id) {
 
     try {
         // Check for existing jobs with the same labels
-        const labelSelector = `indexer_id=${indexer_id},source_id=${source_id}`;
+        const labelSelector = `pipeline_id=${pipeline_id}`;
         const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
 
         if (existingJobs.body.items.length > 0) {
-            console.log('A job with the same indexer_id and source_id already exists');
+            console.log('A job with the same pipeline_id already exists');
             return;
         }
 
