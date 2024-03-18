@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const basePath = path.join(__dirname, 'indexers_base.json');
 const targetPath = path.join(__dirname, 'indexers.json');
@@ -43,14 +44,16 @@ function resolveExistingIndexerOptions() {
             notebookRepos.forEach(repo => {
                 config.notebook.push({
                   name: repo,
-                  command: `kb_indexer notebook -r ${repo} pipeline`
+                  command: `kb_indexer notebook -r ${repo} pipeline`,
+                  uuid: crypto.randomUUID()
                 });
               });
 
               datasetNames.forEach(name => {
                 config.dataset.push({
                   name: name,
-                  command: `kb_indexer dataset -r '${name}' pipeline`
+                  command: `kb_indexer dataset -r '${name}' pipeline`,
+                  uuid: crypto.randomUUID()
                 });
               });
 
@@ -63,8 +66,10 @@ function resolveExistingIndexerOptions() {
             });
         } catch (parseError) {
             console.error('Error parsing JSON data:', parseError);
+            return false;
         }
     });
+    return true;
 }
 
 module.exports = { resolveExistingIndexerOptions };
