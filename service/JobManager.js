@@ -31,7 +31,21 @@ exports.getPods = async function () {
 
 exports.createJob = async function (pipeline_id) {
     // Define the command arguments for the specific kb-indexer task
-    let commandArgs = ['notebook', '-r', 'Kaggle', 'index']; // Example: running the full API indexing pipeline
+    
+
+
+    let commandArgs = [];
+    try {
+        const indexers = JSON.parse(fs.readFileSync('../indexconfig/indexers_id.json', 'utf8'));
+        const indexer = indexers[pipeline_id];
+        if (indexer) {
+            commandArgs = indexer.command.split(' ');
+        } else {
+            console.log(`No indexer found for pipeline_id: ${pipeline_id}`);
+        }
+    } catch (err) {
+        console.error('Error reading indexers.json:', err);
+    }
 
     // Generate a unique job name
     let jobName = `kb-indexer-${uuid.v4()}`;
@@ -64,7 +78,7 @@ exports.createJob = async function (pipeline_id) {
                     containers: [{
                         name: 'kb-indexer-container',
                         image: 'qcdis/kb-indexer', 
-                        command: ['kb_indexer', ...commandArgs],
+                        command: commandArgs,
                         env: envVars
                     }],
                     restartPolicy: 'Never'
