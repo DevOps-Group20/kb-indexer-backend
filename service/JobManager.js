@@ -27,6 +27,7 @@ exports.getPods = async function () {
     }
 };
 
+/*
 exports.createJob = async function (indexer_id, source_id) {
     let commandArgs = ["print bpi(2000)"];
     let jobName = `pi-${uuid.v4()}`;
@@ -73,6 +74,75 @@ exports.createJob = async function (indexer_id, source_id) {
         console.error('Error in job creation:', err);
     }
 };
+*/
+
+exports.createJob = async function (indexer_id, source_id) {
+    // Define the command arguments for the specific kb-indexer task
+    let commandArgs = ['notebook', '-r', 'Kaggle', 'index']; // Example: running the full API indexing pipeline
+
+    // Generate a unique job name
+    let jobName = `kb-indexer-${uuid.v4()}`;
+
+    // Set the required environment variables for the kb-indexer container
+    let envVars = [
+        { name: 'DATA_DIR', value: '/app/data' },
+        { name: 'ELASTICSEARCH_HOST', value: 'http://kms-elasticsearch.kms.svc.cluster.local:9200' },
+        { name: 'ELASTICSEARCH_USERNAME', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'ELASTICSEARCH_USERNAME' }}},
+        { name: 'ELASTICSEARCH_PASSWORD', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'ELASTICSEARCH_PASSWORD' }}},
+        { name: 'KAGGLE_USERNAME', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'KAGGLE_USERNAME' }}},
+        { name: 'KAGGLE_KEY', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'KAGGLE_KEY' }}},
+        { name: 'GITHUB_API_TOKEN', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'GITHUB_API_TOKEN' }}}
+    ];
+
+    // Construct the Kubernetes job object
+    let job = {
+        apiVersion: 'batch/v1',
+        kind: 'Job',
+        metadata: {
+            name: jobName,
+            labels: {
+                indexer_id: indexer_id,
+                source_id: source_id
+            }
+        },
+        spec: {
+            ttlSecondsAfterFinished: 3600,
+            template: {
+                spec: {
+                    containers: [{
+                        name: 'kb-indexer-container',
+                        image: 'qcdis/kb-indexer', 
+                        command: ['kb_indexer', ...commandArgs],
+                        env: envVars
+                    }],
+                    restartPolicy: 'Never'
+                }
+            },
+            backoffLimit: 4
+        }
+    };
+
+    try {
+        // Check for existing jobs with the same labels
+        const labelSelector = `indexer_id=${indexer_id},source_id=${source_id}`;
+        const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
+
+        if (existingJobs.body.items.length > 0) {
+            console.log('A job with the same indexer_id and source_id already exists');
+            return;
+        }
+
+        // Create the Kubernetes job
+        let response = await batchV1Api.createNamespacedJob('default', job);
+        console.log('Job created:', response.body);
+    } catch (err) {
+        console.error('Error in job creation:', err);
+    }
+};
+
+// Example usage
+// createJob('some-indexer-id', 'some-source-id').then(() => console.log('Job creation initiated.'));
+
 
 const { EventEmitter } = require('events');
 const jobStatusEmitter = new EventEmitter();
