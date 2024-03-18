@@ -6,10 +6,16 @@ var Default = require('./service/DefaultService');
 const cors = require('cors');
 const { initFirebase } = require('./utils/authenticate');
 const { getIndexers, runIndexingPipeline, subscribeToEvents } = require('./controllers/Default');
+const { resolveExistingIndexerOptions } = require('./indexconfig/parse-indexers');
+const { setupK8S } = require('./service/JobManager');
 
 const app = express();
+const serverPort = 8090;
 
 initFirebase();
+
+resolveExistingIndexerOptions();
+// setupK8S();
 
 app.options('*', cors());
 
@@ -19,6 +25,7 @@ app.get('/indexers', getIndexers);
 app.post('/index', runIndexingPipeline);
 app.get('/events', subscribeToEvents);
 
-app.listen(8090, () => {
-  console.log('Server is running on http://localhost:8090');
+app.listen(serverPort, function () {
+    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
 });
