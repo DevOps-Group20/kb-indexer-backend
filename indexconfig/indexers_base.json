@@ -2,25 +2,29 @@
     "notebook": [
         {
             "name": "all",
-            "command": "kb_indexer notebook pipeline"
+            "command": "kb_indexer notebook pipeline",
+            "uuid": "71c05f53-8775-43c9-9747-1269f8a2b6e6"
         }
     ],
     "web": [
         {
             "name": "all",
-            "command": "kb_indexer web pipeline"
+            "command": "kb_indexer web pipeline",
+            "uuid" : "c3334f24-0379-436f-a917-30270077444f"
         }
     ],
     "dataset": [
         {
             "name": "all",
-            "command": "kb_indexer dataset pipeline"
+            "command": "kb_indexer dataset pipeline",
+            "uuid" : "91820dc4-b653-474c-958f-b7539d7c3c53"
         }
     ],
     "api": [
         {
             "name": "all",
-            "command": "kb_indexer api pipeline"
+            "command": "kb_indexer api pipeline",
+            "uuid" : "2263b73a-3222-4fc0-bf97-ba4b62baf0bf"
         }
     ]
 }
