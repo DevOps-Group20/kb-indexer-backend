@@ -90,7 +90,4 @@ function resolveExistingIndexerOptions() {
     });
 }
 
-// module.exports = { resolveExistingIndexerOptions };
-if (require.main === module) {
-  resolveExistingIndexerOptions();
-}
+module.exports = { resolveExistingIndexerOptions };
