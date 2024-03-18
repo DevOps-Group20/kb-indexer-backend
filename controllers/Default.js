@@ -4,21 +4,33 @@ var utils = require('../utils/writer.js');
 var Default = require('../service/DefaultService');
 const { verifyToken } = require('../utils/authenticate.js');
 
-exports.runIndexingPipeline = function runIndexingPipeline (req, res, next, body) {
-  Default.runIndexingPipeline(body)
-    .then(resp => utils.writeJson(res, resp))
-  next();
+
+
+exports.runIndexingPipeline = async function runIndexingPipeline (req, res) {
+  if (await verifyToken(req)) {
+    Default.runIndexingPipeline(req.body)
+      .then(resp => utils.writeJson(res, resp, 200));
+  } else {
+    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401)
+  }
+
 };
 
-exports.subscribeToEvents = function subscribeToEvents(req, res, next) {
-  Default.subscribeToEvents(req, res);
+exports.subscribeToEvents = async function subscribeToEvents(req, res) {
+  if (await verifyToken(req)) {
+    //TODO: this still needs to be implemented
+    Default.subscribeToEvents(req, res);
+  } else {
+    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
+  }
+ 
 }
 
-exports.getIndexers = async function getIndexers(req, res, next) {
+exports.getIndexers = async function getIndexers(req, res) {
   if (await verifyToken(req)) {
     utils.writeJson(res, Default.getIndexers(), 200);
   } else {
-    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401)
+    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
   }
 };
 
