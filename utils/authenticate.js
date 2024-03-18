@@ -17,7 +17,6 @@ exports.verifyToken = async (req) => {
       const decodedToken = await admin.auth().verifyIdToken(token);
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
