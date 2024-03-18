@@ -1,0 +1,5 @@
+indexconfig/sources/indexers/notebook/data_sources/envri_queries.csv
+indexconfig/sources/indexers/notebook/data_sources/kaggle_crawler_queries.csv
+indexconfig/sources/indexers/notebook/data_sources/pwc_queries.csv
+indexconfig/sources/indexers/web/data_sources/ResearchInfrastructures.json
+indexconfig/sources/indexers/web/data_sources/extensions.json
