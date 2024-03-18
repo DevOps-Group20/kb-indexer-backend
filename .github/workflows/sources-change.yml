@@ -3,7 +3,7 @@ name: Update Changed Files List
 # on:
 #   push:
 #     branches:
-#       - main
+#       - master
 #     paths:
 #       - 'indexconfig/sources/**'
 
@@ -27,7 +27,7 @@ jobs:
           git config user.email github-actions@github.com
           git add indexconfig/changed_source_files.txt
           git commit -m "Update list of changed indexer source files in indexconfig/sources/"
-          git push origin main
+          git push origin master
         else
           echo "No changes in indexconfig/sources/ to update."
         fi
