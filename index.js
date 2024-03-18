@@ -1,42 +1,24 @@
-'use strict';
-
-var path = require('path');
-var http = require('http');
-var cors = require('cors'); // Include the CORS middleware
-
-var oas3Tools = require('oas3-tools');
+const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('api/openapi.yaml');
+var Default = require('./service/DefaultService');
+const cors = require('cors');
 const { initFirebase } = require('./utils/authenticate');
-var serverPort = 8090;
+const { getIndexers, runIndexingPipeline, subscribeToEvents } = require('./controllers/Default');
 
-// swaggerRouter configuration
-var options = {
-    routing: {
-        controllers: path.join(__dirname, './controllers')
-    },
-};
-
-var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
-var app = expressAppConfig.getApp();
-app.options('*', cors()) // include before other routes
-
-const { resolveExistingIndexerOptions } = require('./indexconfig/parse-indexers');
-
-resolveExistingIndexerOptions();
-
-const { setupK8S } = require('./service/JobManager');
+const app = express();
 
 initFirebase();
 
-// const { setupK8S } = require('./service/JobManager');
+app.options('*', cors());
 
-// setupK8S();
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Initialize the Swagger middleware
-const server = http.createServer(app)
+app.get('/indexers', getIndexers);
+app.post('/index', runIndexingPipeline);
+app.get('/events', subscribeToEvents);
 
-server.listen(serverPort, function () {
-    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
+app.listen(8090, () => {
+  console.log('Server is running on http://localhost:8090');
 });
-
-
