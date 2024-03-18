@@ -8,12 +8,12 @@
     {
       "name": "Kaggle",
       "command": "kb_indexer notebook -r Kaggle pipeline",
-      "uuid": "3d927c46-880a-425c-82f9-7715fd026d65"
+      "uuid": "f0f2b853-b063-4c66-95f4-52b922b8088c"
     },
     {
       "name": "GitHub",
       "command": "kb_indexer notebook -r GitHub pipeline",
-      "uuid": "d53dbc79-2fbc-489f-9791-6e53698eb9ae"
+      "uuid": "f0dfbb6c-9def-467a-a1aa-7096dd8c781b"
     }
   ],
   "web": [
@@ -32,32 +32,32 @@
     {
       "name": "DiSSCo",
       "command": "kb_indexer dataset -r 'DiSSCo' pipeline",
-      "uuid": "4610082b-4285-4090-b254-70a1e5521062"
+      "uuid": "69f70dc0-754e-4ecd-9f73-c0c13f1e5dd3"
     },
     {
       "name": "ICOS",
       "command": "kb_indexer dataset -r 'ICOS' pipeline",
-      "uuid": "d3cf0448-f4e5-4190-9b01-b5177a4e7c50"
+      "uuid": "4086b69c-b377-48cf-81d4-c63b63d33022"
     },
     {
       "name": "LifeWatch",
       "command": "kb_indexer dataset -r 'LifeWatch' pipeline",
-      "uuid": "ac64a232-1d82-41e8-85f3-75e914bbe555"
+      "uuid": "4cea4bec-9c6f-4a15-863f-801a02cb0e45"
     },
     {
       "name": "SeaDataNet CDI",
       "command": "kb_indexer dataset -r 'SeaDataNet CDI' pipeline",
-      "uuid": "5a1267cd-3ce8-4216-8001-c64c8d3d7b4e"
+      "uuid": "e0206252-2c7f-40b0-a37c-d27ccd18b7c1"
     },
     {
       "name": "SeaDataNet EDMED",
       "command": "kb_indexer dataset -r 'SeaDataNet EDMED' pipeline",
-      "uuid": "fbb583f4-dbf2-4b24-aecf-1962c7c3964c"
+      "uuid": "0d6ff1c6-b7dd-4b70-90a0-3bbd0ec6874a"
     },
     {
       "name": "SIOS",
       "command": "kb_indexer dataset -r 'SIOS' pipeline",
-      "uuid": "2ce26aa9-e4b2-471e-9fe3-d8cd8e124497"
+      "uuid": "ee075b21-36ed-461a-bfad-32086f16bfff"
     }
   ],
   "api": [
