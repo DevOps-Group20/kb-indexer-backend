@@ -19,16 +19,21 @@ exports.getIndexers = function () {
  * returns inline_response_200
  **/
 exports.runIndexingPipeline = async function (body) {
-  console.log("indexer_id is", body['indexer_id']);
-  console.log("source_id is", 'source_id' in body ? body['source_id'] : undefined);
+
+  const indexer_id = 'indexer_id' in body ? body['indexer_id'] : undefined;
+  const source_id = 'source_id' in body ? body['source_id'] : undefined;
+
+  console.log("indexer_id is", indexer_id);
+  console.log("source_id is", source_id);
   
-  createJob(body['indexer_id'], 'source_id' in body ? body['source_id'] : undefined);
+  // TODO: This code throws errors
+  // createJob(indexer_id, source_id);
   /**
    * TODO: This is where we need to implement the server events (event-stream)
    * TODO: there is some weird issue witht the return value being an empty object. maybe itll be fixed when we implement the actual backend
    */
 
-  return ({ "message": "message" });
+  return { status: "Job Started" };
 }
 
 const { jobStatusEmitter } = require('./JobManager');
