@@ -27,7 +27,7 @@ exports.runIndexingPipeline = async function (body) {
    * TODO: there is some weird issue witht the return value being an empty object. maybe itll be fixed when we implement the actual backend
    */
 
-  return ({ "message": "Running pipeline "+pipeline_id+"..." });
+  return { status: "Job Started" };
 }
 
 const { jobStatusEmitter } = require('./JobManager');
