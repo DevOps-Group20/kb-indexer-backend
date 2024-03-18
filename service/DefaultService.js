@@ -8,7 +8,7 @@ const indexersJson = require('../indexconfig/indexers.json');
  * returns List
  **/
 exports.getIndexers = function () {
-  return indexersJson;
+  return Object.entries(indexersJson).map(([key, value]) => ({name: key, sources: value}))
 }
 
 
