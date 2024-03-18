@@ -121,10 +121,7 @@ components:
       - indexer_id
       type: object
       properties:
-        indexer_id:
-          type: string
-          format: uuid
-        source_id:
+        pipeline_id:
           type: string
           format: uuid
     inline_response_200:
