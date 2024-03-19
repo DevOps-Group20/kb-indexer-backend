@@ -166,5 +166,27 @@ const watchAllJobsStatus = function() {
 
     // Optional: handle watch termination, etc.
 };
+
+exports.getAllJobsStatus = async function () {
+    let jobStatuses = [];
+
+    try {
+        // Fetch all jobs in the specified namespace
+        const { body } = await batchV1Api.listNamespacedJob('default'); // Replace 'default' with your namespace if different
+        const jobs = body.items;
+
+        // Extract the status and pipeline_id for each job
+        jobStatuses = jobs.map(job => ({
+            name: job.metadata.name,
+            status: job.status, // You can further refine what you extract from the status
+            pipeline_id: job.metadata.labels ? job.metadata.labels.pipeline_id : null
+        }));
+
+    } catch (error) {
+        console.error('Error fetching job statuses:', error);
+    }
+
+    return jobStatuses;
+};
 // Export the emitter so other modules can listen to it
 exports.jobStatusEmitter = jobStatusEmitter;

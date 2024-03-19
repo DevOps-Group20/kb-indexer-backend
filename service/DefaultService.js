@@ -37,20 +37,30 @@ exports.subscribeToEvents = function (req, res) {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin':'*'
   });
 
-  // Keep the connection open by sending a comment every X seconds
+  // Send the current status of all jobs as the first message
+  getAllJobsStatus().then(allJobsStatus => {
+    res.write(`data: ${JSON.stringify(allJobsStatus)}\n\n`);
+  }).catch(error => {
+    console.error('Error fetching initial job statuses:', error);
+  });
+
+  // Keep the connection open by sending a comment every 20 seconds
   const intervalId = setInterval(() => {
     res.write(': keep-alive\n\n');
-  }, 20000); // 20 seconds
+  }, 20000);
 
+  // Listen for job status updates and send them to the client
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
   });
 
+  // Clean up when the client disconnects
   req.on('close', () => {
-      clearInterval(intervalId);
-      jobStatusEmitter.removeAllListeners('jobStatusChanged');
+    clearInterval(intervalId);
+    jobStatusEmitter.removeAllListeners('jobStatusChanged');
   });
 };

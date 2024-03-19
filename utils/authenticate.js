@@ -21,5 +21,14 @@ exports.verifyToken = async (req) => {
     }
   }
 
+exports.verifyTokenString = async (token) => {
+  try {
+    await admin.auth().verifyIdToken(token.split(' ')[1]);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 
