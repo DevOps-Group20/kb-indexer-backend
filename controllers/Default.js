@@ -18,24 +18,14 @@ exports.runIndexingPipeline = async function runIndexingPipeline (req, res) {
 
 exports.subscribeToEvents = async function subscribeToEvents(req, res) {
   Default.subscribeToEvents(req, res);
-  /*
-  // Extract token from query parameters
-  const token = req.query.token;
+  // if (await verifyToken(req)) {
+  //   console.log(req.headers);
+  //   Default.subscribeToEvents(req, res);
+  // } else {
+  //   utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
+  // }
 
-  if (!token) {
-    utils.writeJson(res, { error: "No token provided." }, 400);
-    return;
-  }
-
-  if (await verifyTokenString(token)) {
-    // If the token is valid, proceed with setting up the event stream
-    Default.subscribeToEvents(req, res);
-  } else {
-    // If the token is invalid, return an unauthorized error
-    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
-  }
-  */
-};
+}
 
 exports.getIndexers = async function getIndexers(req, res) {
   if (await verifyToken(req)) {

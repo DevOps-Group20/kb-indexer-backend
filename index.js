@@ -16,9 +16,8 @@ const serverPort = 8090;
 initFirebase();
 
 resolveExistingIndexerOptions();
-setupK8S();
-
-
+//TODO: setupK8S throws an error (Connection refused)
+// setupK8S();
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

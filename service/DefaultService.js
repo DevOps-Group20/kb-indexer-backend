@@ -33,34 +33,31 @@ exports.runIndexingPipeline = async function (body) {
 const { jobStatusEmitter } = require('./JobManager');
 
 exports.subscribeToEvents = function (req, res) {
+
   // Set headers for SSE
   res.writeHead(200, {
+    'Access-Control-Allow-Origin': '*',
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin':'*'
+    'Connection': 'keep-alive'
   });
 
-  // Send the current status of all jobs as the first message
-  getAllJobsStatus().then(allJobsStatus => {
-    res.write(`data: ${JSON.stringify(allJobsStatus)}\n\n`);
-  }).catch(error => {
-    console.error('Error fetching initial job statuses:', error);
-  });
-
-  // Keep the connection open by sending a comment every 20 seconds
+  // Keep the connection open by sending a comment every X seconds
   const intervalId = setInterval(() => {
     res.write(': keep-alive\n\n');
-  }, 20000);
+  }, 20000); // 20 seconds
 
   // Listen for job status updates and send them to the client
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
+    res.write('event: jobStatusChanged')
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
+    res.write(`id: ${counter}\n\n`); 
+    counter++;
   });
 
   // Clean up when the client disconnects
   req.on('close', () => {
-    clearInterval(intervalId);
-    jobStatusEmitter.removeAllListeners('jobStatusChanged');
+      // clearInterval(intervalId);
+      jobStatusEmitter.removeAllListeners('jobStatusChanged');
   });
 };
