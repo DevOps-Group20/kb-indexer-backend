@@ -17,7 +17,7 @@ initFirebase();
 
 resolveExistingIndexerOptions();
 //TODO: setupK8S throws an error (Connection refused)
-// setupK8S();
+setupK8S();
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

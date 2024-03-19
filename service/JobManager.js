@@ -46,10 +46,10 @@ exports.createJob = async function (pipeline_id) {
         if (indexer) {
             additionalCommand = indexer;
         } else {
-            console.log(`No indexer found for pipeline_id: ${pipeline_id}`);
+            return {message:`No indexer found for pipeline_id: ${pipeline_id}`, code:404};
         }
     } catch (err) {
-        console.error('Error reading indexers.json:', err);
+        return {message:'Error reading indexers.json:', code:500};
     }
 
     let mkdirCommand = 'mkdir -p /app/data';
@@ -105,15 +105,15 @@ exports.createJob = async function (pipeline_id) {
 
 
         if (existingJobs.body.items.length > 0) {
-            console.log('A job with the same pipeline_id already exists');
-            return;
+            return {message:'A job with the same pipeline_id already exists', code:409};
+            
         }
 
         // Create the Kubernetes job
         let response = await batchV1Api.createNamespacedJob('default', job);
-        console.log('Job created:', response.body);
+        return {message:'Job created', code:200};
     } catch (err) {
-        console.error('Error in job creation:', err);
+        return {message:'Error in job creation:', code:500};
     }
 };
 

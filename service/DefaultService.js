@@ -21,13 +21,13 @@ exports.getIndexers = function () {
 exports.runIndexingPipeline = async function (body) {
   const pipeline_id = 'pipeline_id' in body ? body['pipeline_id'] : undefined
   
-  createJob(pipeline_id);
+  let response = createJob(pipeline_id);
   /**
    * TODO: This is where we need to implement the server events (event-stream)
    * TODO: there is some weird issue witht the return value being an empty object. maybe itll be fixed when we implement the actual backend
    */
 
-  return { status: "Job Started" };
+  return response;
 }
 
 

@@ -9,7 +9,7 @@ const { verifyToken, verifyTokenString } = require('../utils/authenticate.js');
 exports.runIndexingPipeline = async function runIndexingPipeline (req, res) {
   if (await verifyToken(req)) {
     Default.runIndexingPipeline(req.body)
-      .then(resp => utils.writeJson(res, resp, 200));
+      .then(resp => utils.writeJson(res, { message: resp.message }, resp.code));
   } else {
     utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401)
   }
