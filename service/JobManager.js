@@ -124,28 +124,6 @@ exports.createJob = async function (pipeline_id) {
 const { EventEmitter } = require('events');
 const jobStatusEmitter = new EventEmitter();
 
-exports.watchJobStatus = function(jobName) {
-    const watch = new k8s.Watch(kc);
-    const path = `/apis/batch/v1/namespaces/default/jobs/${jobName}/status`;
-
-    watch.watch(path, 
-        // optional query parameters can go here.
-        {},
-        // callback for when a change is detected
-        (type, apiObj, watchObj) => {
-            if (type === 'ADDED' || type === 'MODIFIED') {
-                console.log('Job status changed');
-                jobStatusEmitter.emit('jobStatusChanged', apiObj);
-            }
-        },
-        // callback for any errors
-        (err) => {
-            console.error(err);
-        }
-    );
-    
-    // Optional: handle watch termination, etc.
-};
 const watchAllJobsStatus = function() {
     const watch = new k8s.Watch(kc);
     const path = '/apis/batch/v1/namespaces/default/jobs';
@@ -154,6 +132,8 @@ const watchAllJobsStatus = function() {
         {},
         // callback for when a change is detected
         (type, apiObj, watchObj) => {
+
+            console.log("change");
             if (type === 'ADDED' || type === 'MODIFIED') {
                 jobStatusEmitter.emit('jobStatusChanged', apiObj);
             }

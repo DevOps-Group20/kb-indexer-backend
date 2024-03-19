@@ -26,5 +26,5 @@ spec:
           value: "production"
         # Include other environment variables your application needs
         - name: LOL
-          value: "lol"
+          value: "lol1"
 

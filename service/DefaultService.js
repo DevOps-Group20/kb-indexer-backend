@@ -1,6 +1,6 @@
 'use strict';
 
-const { getPods, createJob } = require('./JobManager');
+const { getPods, createJob, getAllJobsStatus } = require('./JobManager');
 const indexersJson = require('../indexconfig/indexers.json');
 /**
  * Returns list of all available indexers and their respective resource types
@@ -34,7 +34,7 @@ exports.runIndexingPipeline = async function (body) {
 
 const { jobStatusEmitter } = require('./JobManager');
 
-exports.subscribeToEvents = function (req, res) {
+exports.subscribeToEvents = async function (req, res) {
 
   let counter = 0;
 
@@ -47,15 +47,17 @@ exports.subscribeToEvents = function (req, res) {
   });
 
   res.write('event: connected\n');
-  res.write(`data: You are now subscribed!\n`);
+  res.write(`data: ${JSON.stringify(await getAllJobsStatus())}\n\n`);
   res.write(`id: ${counter}\n\n`); 
+
   
   counter++;
 
   
   // Listen for job status updates and send them to the client
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
-    res.write('event: jobStatusChanged')
+    console.log(jobStatus);
+    res.write('event: jobStatusChanged\n')
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
     res.write(`id: ${counter}\n\n`); 
     counter++;
