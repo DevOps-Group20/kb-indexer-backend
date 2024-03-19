@@ -17,12 +17,13 @@ exports.runIndexingPipeline = async function runIndexingPipeline (req, res) {
 };
 
 exports.subscribeToEvents = async function subscribeToEvents(req, res) {
-  if (await verifyToken(req)) {
-    //TODO: this still needs to be implemented
-    Default.subscribeToEvents(req, res);
-  } else {
-    utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
-  }
+  Default.subscribeToEvents(req, res);
+  // if (await verifyToken(req)) {
+  //   console.log(req.headers);
+  //   Default.subscribeToEvents(req, res);
+  // } else {
+  //   utils.writeJson(res, { error: "Unauthorized access. Please provide a valid token." }, 401);
+  // }
  
 }
 

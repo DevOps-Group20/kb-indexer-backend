@@ -33,24 +33,39 @@ exports.runIndexingPipeline = async function (body) {
 const { jobStatusEmitter } = require('./JobManager');
 
 exports.subscribeToEvents = function (req, res) {
+
   // Set headers for SSE
   res.writeHead(200, {
+    'Access-Control-Allow-Origin': '*',
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive'
   });
 
-  // Keep the connection open by sending a comment every X seconds
-  const intervalId = setInterval(() => {
-    res.write(': keep-alive\n\n');
-  }, 20000); // 20 seconds
+  let counter = 0;
+
+  // res.write('event: connected\n');
+
+  res.write('event: connected\n');
+  res.write(`data: You are now subscribed!\n`);
+  res.write(`id: ${counter}\n\n`); 
+  
+  counter++;
+
+  // // Keep the connection open by sending a comment every X seconds
+  // const intervalId = setInterval(() => {
+  //   res.write('event: HELLO\n\n');
+  // }, 5000); // 5 seconds
 
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
+    res.write('event: jobStatusChanged')
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
+    res.write(`id: ${counter}\n\n`); 
+    counter++;
   });
 
   req.on('close', () => {
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
       jobStatusEmitter.removeAllListeners('jobStatusChanged');
   });
 };
