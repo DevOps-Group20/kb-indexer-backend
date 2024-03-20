@@ -2,7 +2,6 @@ indexconfig/sources/indexers/api/data_sources/DB/Climate_API/airnow-feed-api_res
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/airvisual-rest-api-v2_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/ambee-rest-api-v10_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/api-ninjas-rest-api-v10_result.json
-indexconfig/sources/indexers/api/data_sources/DB/Climate_API/atmosphere-nitrous-oxide-levels-rest-api-v10_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/bloowatch-rest-api-v1_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/cal-adapt-rest-api_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/carbon-interface-rest-api-v1_result.json
