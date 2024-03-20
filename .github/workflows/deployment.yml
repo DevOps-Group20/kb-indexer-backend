@@ -2,8 +2,10 @@ name: Build, Push and Deploy Docker image to AKS
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
+    paths:
+      - 'indexconfig/changed_source_files.txt'
   workflow_dispatch:
 
 permissions: 
@@ -27,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: philippsommer27/kb-indexer-backend:${{ github.ref_name }}
+          tags: philippsommer27/kb-indexer-backend:latest
 
   deploy-to-aks:
     runs-on: ubuntu-latest
@@ -54,7 +56,7 @@ jobs:
 
       - name: Update image version in Kubernetes deployment
         run: |
-          sed -i 's|philippsommer27/kb-indexer-backend:latest|philippsommer27/kb-indexer-backend:${{ github.ref_name }}|g' deployments/kb-indexer-backend-deployment.yaml
+          sed -i 's|philippsommer27/kb-indexer-backend:latest|philippsommer27/kb-indexer-backend:latest|g' deployments/kb-indexer-backend-deployment.yaml
 
       - name: Deploy application to AKS
         run: |
