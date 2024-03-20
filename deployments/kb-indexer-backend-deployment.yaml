@@ -25,4 +25,4 @@ spec:
         - name: NODE_ENV
           value: "production"
         - name: UPDATE
-          value: "5"
+          value: "4"
