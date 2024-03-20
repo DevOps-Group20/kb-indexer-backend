@@ -103,17 +103,28 @@ exports.createJob = async function (pipeline_id) {
         const labelSelector = `pipeline_id=${pipeline_id}`;
         const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
 
-
         if (existingJobs.body.items.length > 0) {
-            return {message:'A job with the same pipeline_id already exists', code:409};
-            
+            // Check if any of the existing jobs have failed
+            const failedJob = existingJobs.body.items.find(job => job.status && job.status.failed);
+
+            if (failedJob) {
+                // Logic to restart the failed job
+                // Depending on your cluster setup, this might involve different steps
+                // For simplicity, the following code deletes the old job and creates a new one
+
+                await batchV1Api.deleteNamespacedJob(failedJob.metadata.name, 'default');
+                let response = await batchV1Api.createNamespacedJob('default', job);
+                return {message: 'Job restarted', code: 200};
+            } else {
+                return {message: 'A job with the same pipeline_id already exists', code: 409};
+            }
         }
 
         // Create the Kubernetes job
         let response = await batchV1Api.createNamespacedJob('default', job);
-        return {message:'Job created', code:200};
+        return {message: 'Job created', code: 200};
     } catch (err) {
-        return {message:'Error in job creation:', code:500};
+        return {message: 'Error in job creation:', code: 500};
     }
 };
 
