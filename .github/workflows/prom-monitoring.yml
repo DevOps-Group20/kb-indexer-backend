@@ -2,7 +2,7 @@ name: Setup Prometheus Monitoring
 
 on:
   workflow_run:
-    workflows: [Build, Push and Deploy Docker image to AKS]
+    workflows: [Deploy]
     types:
       - completed
   workflow_dispatch:
