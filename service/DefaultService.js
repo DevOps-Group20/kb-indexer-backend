@@ -56,7 +56,7 @@ exports.subscribeToEvents = async function (req, res) {
   
   // Listen for job status updates and send them to the client
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
-    console.log(jobStatus);
+    console.log("fire event");
     res.write('event: jobStatusChanged\n')
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
     res.write(`id: ${counter}\n\n`); 
