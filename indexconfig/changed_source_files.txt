@@ -263,7 +263,6 @@ indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/AnnAE 1.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/AnnAE 2.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/DiSSCo.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/GeoNetwork.json
-indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/lifewatch 1.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/lifewatch 2.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/lifewatch 3.json
 indexconfig/sources/indexers/api/data_sources/DB/LifeWatch/lifewatch 4.json
