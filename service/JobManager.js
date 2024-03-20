@@ -11,7 +11,7 @@ const indexers = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 let kc, k8sApi, batchV1Api;
 
-exports.setupK8S = async function () {
+exports.setupK8S = function () {
     kc = new k8s.KubeConfig();
     kc.loadFromDefault();
     k8sApi = kc.makeApiClient(k8s.CoreV1Api);
@@ -179,5 +179,32 @@ exports.getAllJobsStatus = async function () {
 
     return jobStatuses;
 };
+
+
+exports.restartJobsFromTasks = async function () {
+    console.log('Restarting jobs from tasks...');
+    const tasksPath = path.join(__dirname, '..', 'indexconfig', 'reindexing_tasks.txt');
+
+    try {
+        const pipelineIds = fs.readFileSync(tasksPath, 'utf8').split('\n').filter(Boolean);
+
+        for (const pipeline_id of pipelineIds) {
+            const labelSelector = `pipeline_id=${pipeline_id}`;
+            const existingJobs = await batchV1Api.listNamespacedJob('default', null, null, null, null, labelSelector);
+
+            if (existingJobs.body.items.length > 0) {
+                for (const job of existingJobs.body.items) {
+                    await batchV1Api.deleteNamespacedJob(job.metadata.name, 'default');
+                }
+            }
+            const restartResponse = await exports.createJob(pipeline_id);
+            console.log(restartResponse);
+        }
+    } catch (err) {
+        console.error('Error in restarting jobs from tasks:', err);
+    }
+};
+
+
 // Export the emitter so other modules can listen to it
 exports.jobStatusEmitter = jobStatusEmitter;

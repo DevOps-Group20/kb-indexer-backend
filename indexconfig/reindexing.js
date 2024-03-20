@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { restartJobsFromTasks } = require('../service/JobManager');
+
 const changed_files_path = path.join(__dirname, 'changed_source_files.txt');
 const tasks_path = path.join(__dirname, 'reindexing_tasks.txt');
 
@@ -30,6 +32,8 @@ function resolveReindexingTasks() {
       
       fs.writeFileSync(tasks_path, outputContent);
       console.log(`UUIDs have been written to ${tasks_path}`);
+      restartJobsFromTasks();
+
     } catch (err) {
       console.error('Error processing the file:', err);
     }

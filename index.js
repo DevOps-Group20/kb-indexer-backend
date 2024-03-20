@@ -7,6 +7,7 @@ const cors = require('cors');
 const { initFirebase } = require('./utils/authenticate');
 const { getIndexers, runIndexingPipeline, subscribeToEvents } = require('./controllers/Default');
 const { resolveExistingIndexerOptions } = require('./indexconfig/parse-indexers');
+const { resolveReindexingTasks } = require('./indexconfig/reindexing');
 const { setupK8S } = require('./service/JobManager');
 const bodyParser = require('body-parser');
 
@@ -18,6 +19,8 @@ initFirebase();
 resolveExistingIndexerOptions();
 //TODO: setupK8S throws an error (Connection refused)
 setupK8S();
+
+resolveReindexingTasks();
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
