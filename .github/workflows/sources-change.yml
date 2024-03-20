@@ -27,6 +27,13 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add indexconfig/changed_source_files.txt
+          
+          FILE=deployments/kb-indexer-backend-deployment.yaml
+          UPDATE_VALUE=$(grep -oP 'name: UPDATE\n\s+value: "\K\d+' "$FILE")
+          NEW_UPDATE_VALUE=$((UPDATE_VALUE+1))
+          sed -i "/name: UPDATE/{n;s/value: \"[^\"]*/value: \"$NEW_UPDATE_VALUE/}" $FILE
+          git add $FILE
+        
           git commit -m "Update list of changed indexer source files in indexconfig/sources/"
           git push origin master
         else
