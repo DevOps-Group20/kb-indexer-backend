@@ -17,7 +17,7 @@ spec:
       serviceAccount: kb-indexer-backend-sa
       containers:
       - name: kb-indexer-backend
-        image: souitch/kb-indexer-backend:latest
+        image: philippsommer27/kb-indexer-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8090
@@ -25,6 +25,5 @@ spec:
         - name: NODE_ENV
           value: "production"
         # Include other environment variables your application needs
-        - name: LOL
-          value: "lol1"
-
+        # - name: LOL
+        #   value: "lol1"

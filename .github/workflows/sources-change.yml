@@ -1,13 +1,11 @@
 name: Update Changed Files List
 
-# on:
-#   push:
-#     branches:
-#       - master
-#     paths:
-#       - 'indexconfig/sources/**'
-
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'indexconfig/sources/**'
   workflow_dispatch:
 
 permissions:

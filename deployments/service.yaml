@@ -5,11 +5,10 @@ metadata:
     app: kb-indexer-backend
   name: kb-indexer-backend
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 8090
     targetPort: 8090
-    nodePort: 31364
     protocol: TCP
     name: http
   selector:
