@@ -87,14 +87,14 @@ exports.createJob = async function (pipeline_id) {
                 spec: {
                     containers: [{
                         name: 'kb-indexer-container',
-                        image: 'qcdis/kb-indexer', 
+                        image: 'philippsommer27/kb-indexer', 
                         command: finalCommand,
                         env: envVars
                     }],
                     restartPolicy: 'Never'
                 }
             },
-            backoffLimit: 4
+            backoffLimit: 1
         }
     };
 
