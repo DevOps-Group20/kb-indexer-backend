@@ -72,6 +72,7 @@ exports.subscribeToEvents = async function (req, res) {
     const jobsStatus = await getAllJobsStatus();
     const cronJobsStatus = await getAllCronJobsStatus();
     const response = { jobs: jobsStatus, cronJobs: cronJobsStatus };
+    res.write('event: connected\n');
     res.write(`data: ${JSON.stringify(response)}\n\n`);
     res.write(`id: ${client.counter}\n\n`);
 
