@@ -24,6 +24,5 @@ spec:
         env:
         - name: NODE_ENV
           value: "production"
-        # Include other environment variables your application needs
-        # - name: LOL
-        #   value: "lol1"
+        - name: UPDATE
+          value: "1"
