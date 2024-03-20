@@ -159,7 +159,7 @@ exports.createCronJob = async function (pipeline_id, cronSchedule) {
     ];
 
     let cronJob = {
-        apiVersion: 'batch/v1beta1',
+        apiVersion: 'batch/v1',
         kind: 'CronJob',
         metadata: {
             name: cronJobName,
@@ -209,6 +209,7 @@ exports.createCronJob = async function (pipeline_id, cronSchedule) {
             return {message: 'CronJob created', code: 200};
         }
     } catch (err) {
+        console.log(err);
         return {message: `Error in cron job creation: ${JSON.stringify(err)}`, code: 500};
     }
 };
@@ -226,7 +227,6 @@ const watchAllJobsStatus = function() {
         // callback for when a change is detected
         (type, apiObj, watchObj) => {
 
-            console.log("change");
             if (type === 'ADDED' || type === 'MODIFIED') {
                 jobStatusEmitter.emit('jobStatusChanged', apiObj);
             }
@@ -237,7 +237,18 @@ const watchAllJobsStatus = function() {
         }
     );
 
-    // Optional: handle watch termination, etc.
+    const cronJobsPath = '/apis/batch/v1/namespaces/default/cronjobs';
+
+    watch.watch(cronJobsPath,
+        {},
+        // callback for when a cron job change is detected
+        (type, apiObj, watchObj) => {
+            if (type === 'ADDED' || type === 'MODIFIED' || type === 'DELETED') {
+                jobStatusEmitter.emit('cronJobStatusChanged', apiObj);
+            }
+        },
+        (err) => { console.error(err); }
+    );
 };
 
 exports.getAllJobsStatus = async function () {
@@ -260,6 +271,30 @@ exports.getAllJobsStatus = async function () {
     }
 
     return jobStatuses;
+};
+
+exports.getAllCronJobsStatus = async function () {
+    let cronJobStatuses = [];
+
+    try {
+        // Fetch all cron jobs in the specified namespace
+        const { body } = await batchV1Api.listNamespacedCronJob('default'); // Replace 'default' with your namespace if different
+        const cronJobs = body.items;
+
+        // Extract relevant information for each cron job
+        cronJobStatuses = cronJobs.map(cronJob => ({
+            name: cronJob.metadata.name,
+            schedule: cronJob.spec.schedule, // The schedule on which the job runs
+            lastScheduleTime: cronJob.status.lastScheduleTime, // Time when last job was scheduled
+            activeJobs: cronJob.status.active ? cronJob.status.active.length : 0, // Number of active jobs spawned by this cron job
+            pipeline_id: cronJob.metadata.labels ? cronJob.metadata.labels.pipeline_id : null
+        }));
+
+    } catch (error) {
+        console.error('Error fetching cron job statuses:', error);
+    }
+
+    return cronJobStatuses;
 };
 
 

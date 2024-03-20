@@ -1,6 +1,6 @@
 'use strict';
 
-const { getPods, createJob, getAllJobsStatus, createCronJob } = require('./JobManager');
+const { getPods, createJob, getAllJobsStatus, createCronJob, getAllCronJobsStatus } = require('./JobManager');
 const indexersJson = require('../indexconfig/indexers.json');
 /**
  * Returns list of all available indexers and their respective resource types
@@ -47,7 +47,20 @@ exports.subscribeToEvents = async function (req, res) {
   });
 
   res.write('event: connected\n');
-  res.write(`data: ${JSON.stringify(await getAllJobsStatus())}\n\n`);
+  const jobsStatus = await getAllJobsStatus();
+  const cronJobsStatus = await getAllCronJobsStatus();
+
+  // Constructing the response object
+  const response = {
+      jobs: jobsStatus,
+      cronJobs: cronJobsStatus
+  };
+
+  // Converting the response object to a JSON string
+  const jsonResponse = JSON.stringify(response);
+
+  // Logging the response
+  res.write(`data: ${jsonResponse}\n\n`);
   res.write(`id: ${counter}\n\n`); 
 
   
@@ -58,6 +71,14 @@ exports.subscribeToEvents = async function (req, res) {
   jobStatusEmitter.on('jobStatusChanged', (jobStatus) => {
     console.log("fire event");
     res.write('event: jobStatusChanged\n')
+    res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
+    res.write(`id: ${counter}\n\n`); 
+    counter++;
+  });
+
+  jobStatusEmitter.on('cronJobStatusChanged', (jobStatus) => {
+    console.log("fire cron event");
+    res.write('event: cronJobStatusChanged\n')
     res.write(`data: ${JSON.stringify(jobStatus)}\n\n`);
     res.write(`id: ${counter}\n\n`); 
     counter++;
