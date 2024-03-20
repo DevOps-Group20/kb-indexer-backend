@@ -1,6 +1,6 @@
 'use strict';
 
-const { getPods, createJob, getAllJobsStatus } = require('./JobManager');
+const { getPods, createJob, getAllJobsStatus, createCronJob } = require('./JobManager');
 const indexersJson = require('../indexconfig/indexers.json');
 /**
  * Returns list of all available indexers and their respective resource types
@@ -19,20 +19,20 @@ exports.getIndexers = function () {
  * returns inline_response_200
  **/
 exports.runIndexingPipeline = async function (body) {
-  const pipeline_id = 'pipeline_id' in body ? body['pipeline_id'] : undefined
-  
-  let response = createJob(pipeline_id);
-  /**
-   * TODO: This is where we need to implement the server events (event-stream)
-   * TODO: there is some weird issue witht the return value being an empty object. maybe itll be fixed when we implement the actual backend
-   */
+  const pipeline_id = 'pipeline_id' in body ? body['pipeline_id'] : undefined;
+  const schedule = 'schedule' in body ? body['schedule'] : undefined
 
-  return response;
+  if(schedule) {
+    return createCronJob(pipeline_id, schedule);
+  }
+  
+  return createJob(pipeline_id);
 }
 
 
 
 const { jobStatusEmitter } = require('./JobManager');
+const s = require('swagger-express-middleware');
 
 exports.subscribeToEvents = async function (req, res) {
 

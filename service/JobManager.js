@@ -60,7 +60,6 @@ exports.createJob = async function (pipeline_id) {
 
     let jobName = `kb-indexer-${uuid.v4()}`;
 
-    // Set the required environment variables for the kb-indexer container
     let envVars = [
         { name: 'DATA_DIR', value: '/app/data' },
         { name: 'ELASTICSEARCH_HOST', value: 'http://kms-elasticsearch.kms.svc.cluster.local:9200' },
@@ -105,18 +104,18 @@ exports.createJob = async function (pipeline_id) {
 
         if (existingJobs.body.items.length > 0) {
             // Check if any of the existing jobs have failed
-            const failedJob = existingJobs.body.items.find(job => job.status && job.status.failed);
-
-            if (failedJob) {
-                // Logic to restart the failed job
-                // Depending on your cluster setup, this might involve different steps
-                // For simplicity, the following code deletes the old job and creates a new one
-
-                await batchV1Api.deleteNamespacedJob(failedJob.metadata.name, 'default');
+            const actionableJob = existingJobs.body.items.find(job => {
+                const status = job.status;
+                return (status && (status.failed || status.succeeded));
+            });
+        
+            if (actionableJob) {
+                // Logic to restart the actionable job (either failed or completed)
+                await batchV1Api.deleteNamespacedJob(actionableJob.metadata.name, 'default');
                 let response = await batchV1Api.createNamespacedJob('default', job);
                 return {message: 'Job restarted', code: 200};
             } else {
-                return {message: 'A job with the same pipeline_id already exists', code: 409};
+                return {message: 'A job with the same pipeline_id is already running', code: 409};
             }
         }
 
@@ -128,8 +127,91 @@ exports.createJob = async function (pipeline_id) {
     }
 };
 
-// Example usage
-// createJob('some-indexer-id', 'some-source-id').then(() => console.log('Job creation initiated.'));
+exports.createCronJob = async function (pipeline_id, cronSchedule) {
+    let additionalCommand = "";
+    try {
+        const indexer = indexers[pipeline_id];
+        if (indexer) {
+            additionalCommand = indexer;
+        } else {
+            return {message:`No indexer found for pipeline_id: ${pipeline_id}`, code:404};
+        }
+    } catch (err) {
+        return {message:'Error reading indexers.json:', code:500};
+    }
+
+    let mkdirCommand = 'mkdir -p /app/data';
+    let fullCommandString = `${mkdirCommand} && ${additionalCommand}`;
+
+    let finalCommand = ['sh', '-c', fullCommandString];
+    console.log('Executing: ', finalCommand.join(" "));
+
+    let cronJobName = `kb-indexer-cron-${uuid.v4()}`;
+
+    let envVars = [
+        { name: 'DATA_DIR', value: '/app/data' },
+        { name: 'ELASTICSEARCH_HOST', value: 'http://kms-elasticsearch.kms.svc.cluster.local:9200' },
+        { name: 'ELASTICSEARCH_USERNAME', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'ELASTICSEARCH_USERNAME' }}},
+        { name: 'ELASTICSEARCH_PASSWORD', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'ELASTICSEARCH_PASSWORD' }}},
+        { name: 'KAGGLE_USERNAME', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'KAGGLE_USERNAME' }}},
+        { name: 'KAGGLE_KEY', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'KAGGLE_KEY' }}},
+        { name: 'GITHUB_API_TOKEN', valueFrom: { secretKeyRef: { name: 'kb-indexer-secrets', key: 'GITHUB_API_TOKEN' }}}
+    ];
+
+    let cronJob = {
+        apiVersion: 'batch/v1beta1',
+        kind: 'CronJob',
+        metadata: {
+            name: cronJobName,
+            labels: {
+                pipeline_id: pipeline_id
+            }
+        },
+        spec: {
+            schedule: cronSchedule,
+            jobTemplate: {
+                spec: {
+                    ttlSecondsAfterFinished: 3600,
+                    template: {
+                        spec: {
+                            containers: [{
+                                name: 'kb-indexer-container',
+                                image: 'philippsommer27/kb-indexer', 
+                                command: finalCommand,
+                                env: envVars
+                            }],
+                            restartPolicy: 'Never'
+                        }
+                    },
+                    backoffLimit: 1
+                }
+            }
+        }
+    };
+
+    try {
+        // Check for existing cron jobs with the same labels
+        const labelSelector = `pipeline_id=${pipeline_id}`;
+        const existingCronJobs = await batchV1Api.listNamespacedCronJob('default', null, null, null, null, labelSelector);
+
+        if (existingCronJobs.body.items.length > 0) {
+            // Logic to handle existing cron job
+            // Depending on your requirements, you may want to update the existing cron job,
+            // delete and recreate it, or simply return an error message.
+
+            // For simplicity, the following code deletes the old cron job and creates a new one
+            await batchV1Api.deleteNamespacedCronJob(existingCronJobs.body.items[0].metadata.name, 'default');
+            let response = await batchV1Api.createNamespacedCronJob('default', cronJob);
+            return {message: 'Existing CronJob replaced', code: 200};
+        } else {
+            // Create the Kubernetes cron job
+            let response = await batchV1Api.createNamespacedCronJob('default', cronJob);
+            return {message: 'CronJob created', code: 200};
+        }
+    } catch (err) {
+        return {message: `Error in cron job creation: ${err}`, code: 500};
+    }
+};
 
 
 const { EventEmitter } = require('events');
