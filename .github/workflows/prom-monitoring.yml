@@ -1,10 +1,6 @@
 name: Setup Prometheus Monitoring
 
 on:
-  workflow_run:
-    workflows: [Deploy]
-    types:
-      - completed
   workflow_dispatch:
 
 permissions: 
