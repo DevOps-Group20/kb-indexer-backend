@@ -1,4 +1,4 @@
-name: Setup Prometheus Monitoring
+name: Deploy Monitoring Stack
 
 on:
   workflow_dispatch:
