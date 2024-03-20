@@ -8,7 +8,6 @@ indexconfig/sources/indexers/api/data_sources/DB/Climate_API/cal-adapt-rest-api_
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/carbon-interface-rest-api-v1_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/carbondoomsday-web-rest-api_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/cimis-web-rest-api_result.json
-indexconfig/sources/indexers/api/data_sources/DB/Climate_API/climate-fieldview-platform-rest-api-v4011_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/climatetrade-unspecified-api-v1_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/climbiz-adapt-climate-projection-rest-api-v1_result.json
 indexconfig/sources/indexers/api/data_sources/DB/Climate_API/co2-offset-rest-api-v3115_result.json
