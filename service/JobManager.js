@@ -209,7 +209,7 @@ exports.createCronJob = async function (pipeline_id, cronSchedule) {
             return {message: 'CronJob created', code: 200};
         }
     } catch (err) {
-        return {message: `Error in cron job creation: ${err}`, code: 500};
+        return {message: `Error in cron job creation: ${JSON.stringify(err)}`, code: 500};
     }
 };
 
