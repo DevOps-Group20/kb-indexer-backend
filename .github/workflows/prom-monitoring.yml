@@ -7,6 +7,11 @@ on:
       - completed
   workflow_dispatch:
 
+permissions: 
+  actions: read
+  id-token: write 
+  contents: read
+
 jobs:
   setup_prometheus:
     runs-on: ubuntu-latest
