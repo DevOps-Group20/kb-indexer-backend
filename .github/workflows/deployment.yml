@@ -66,8 +66,19 @@ jobs:
           action: deploy
           manifests: |
              deployments
-      #   run: |
-      #     kubectl apply -f deployments/.
-      #   env:
-      #     KUBECONFIG: ${{ github.workspace }}/.kube/config
+             
+      - name: Clear changed source files list and commit
+        run: |
+          echo "" > indexconfig/changed_source_files.txt
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add indexconfig/changed_source_files.txt
 
+          # Check if there are any changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Clear changed source files list"
+            git push origin master
+          fi
+          
