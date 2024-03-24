@@ -1,3 +1,4 @@
+---
 openapi: 3.0.0
 info:
   title: KB Indexer API
@@ -9,6 +10,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
+- url: https://virtserver.swaggerhub.com/DanielVerner/kb-indexer/1.0.0
+  description: SwaggerHub API Auto Mocking
 - url: http://localhost:8090
   description: Main
 security:
@@ -17,8 +20,7 @@ security:
 paths:
   /indexers:
     get:
-      description: Returns list of all available indexers and their respective resource
-        types
+      description: Returns list of all available indexers and their respective resource types
       operationId: getIndexers
       responses:
         "200":
@@ -62,33 +64,24 @@ paths:
             https://www.rfc-editor.org/rfc/rfc2324#section-2.3.2
       x-swagger-router-controller: Default
   /events:
-      get:
-        description: Subscribe to a global stream of server-sent events for indexing updates.
-        operationId: subscribeToEvents
-        responses:
-          "200":
-            description: SSE Stream opened
-            content:
-              text/event-stream:
-                schema:
-                  type: string
-          "401":
-            description: Unauthorized access
-        x-swagger-router-controller: Default
+    get:
+      description: Subscribe to a global stream of server-sent events for indexing updates.
+      operationId: subscribeToEvents
+      responses:
+        "200":
+          description: Starts listening to server side events. The initial value is the list of all running jobs and Cron jobs. The remainder of the contents will be return as  Job/CronJob object depending on what changed.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/JobObject'
+        "401":
+          description: Unauthorized access
+      x-swagger-router-controller: Default
 components:
   schemas:
-    IndexingState:
-      type: string
-      enum:
-      - RUNNING
-      - DONE
-      - FAILED
     Indexer:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
         name:
           type: string
           example: Notebooks
@@ -99,15 +92,15 @@ components:
       example:
         sources:
         - name: Kaggle
-          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        - name: Kaggle
-          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        name: Notebooks
-        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - name: Something
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: SomethinElse
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
     Source:
       type: object
       properties:
-        id:
+        uuid:
           type: string
           format: uuid
         name:
@@ -115,7 +108,40 @@ components:
           example: Kaggle
       example:
         name: Kaggle
-        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+    Job:
+      type: object
+      properties:
+        name:
+          type: string
+        pipeline_id:
+          type: string
+          format: uuid
+        status:
+          type: object
+    CronJob:
+      type: object
+      properties:
+        name:
+          type: string
+        pipeline_id:
+          type: string
+          format: uuid
+        schedule:
+          type: string
+          description: Cron job string
+          example: '* * * * *'
+    JobObject:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+        cronJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CronJob'
     index_body:
       required:
       - indexer_id
