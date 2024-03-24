@@ -6,7 +6,7 @@ The backend service is deployed to a Kubernetes cluster using several deployment
 
 ## Deployment Details
 
-The backend service is deployed using a Kubernetes Deployment, as defined in `kb-indexer-backend-deployment.yaml`. The deployment specifies a single replica of the backend service, which uses the Docker image `philippsommer27/kb-indexer-backend:latest`. The service listens on port 8090 and is configured with a couple of environment variables.
+The backend service is deployed using a Kubernetes Deployment, as defined in `kb-indexer-backend-deployment.yaml`. The deployment specifies a single replica of the backend service, which uses the Docker image from Docker Hub. The service listens on port 8090 and is configured with a couple of environment variables.
 
 The service uses a Kubernetes Service Account `kb-indexer-backend-sa` for authorization within the cluster. This service account is bound to two roles: `pod-listing-role` and `job-management-role`, which allow it to list and get pods, and to create, get, list, watch, and delete jobs and cronjobs respectively.
 
