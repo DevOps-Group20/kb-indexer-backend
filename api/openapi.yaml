@@ -34,6 +34,8 @@ paths:
                 x-content-type: application/json
         "400":
           description: bad input parameter
+        "401":
+          description: Unauthorized access
       x-swagger-router-controller: Default
   /index:
     post:
