@@ -59,6 +59,14 @@ jobs:
           resource-group: ${{ vars.RESOURCE_GROUP }}
           cluster-name: ${{ vars.CLUSTER_NAME }}
           use-kubelogin: 'true'
+
+      - name: Prepare Kubernetes Secrets
+        run: |
+          sed -i 's/ELASTICSEARCH_USERNAME: PLACEHOLDER/ELASTICSEARCH_USERNAME: ${{ secrets.ELASTICSEARCH_USERNAME }}/' deployments/secrets.yml
+          sed -i 's/ELASTICSEARCH_PASSWORD: PLACEHOLDER/ELASTICSEARCH_PASSWORD: ${{ secrets.ELASTICSEARCH_PASSWORD }}/' deployments/secrets.yml
+          sed -i 's/KAGGLE_USERNAME: PLACEHOLDER/KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}/' deployments/secrets.yml
+          sed -i 's/KAGGLE_KEY: PLACEHOLDER/KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}/' deployments/secrets.yml
+          sed -i 's/GITHUB_API_TOKEN: PLACEHOLDER/GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}/' deployments/secrets.yml
       
       - name: Deploy application to AKS
         uses: Azure/k8s-deploy@v4.10.0
