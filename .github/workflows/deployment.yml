@@ -28,7 +28,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: philippsommer27/kb-indexer-backend:latest
+          tags: ${{ vars.DH_USER }}/kb-indexer-backend:latest
+          build-args: |
+            FIREBASE_ADMIN_SDK_JSON=${{ secrets.FIREBASE_ADMIN_SDK_JSON }}
 
   deploy-to-aks:
     runs-on: ubuntu-latest
